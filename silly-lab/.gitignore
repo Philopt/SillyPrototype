@@ -8,7 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist directory contains the production build for running the app directly
+# from the repository, so we keep it under version control.
+#dist
 dist-ssr
 *.local
 
