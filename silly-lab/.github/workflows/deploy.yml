@@ -2,7 +2,8 @@ name: Deploy Vite site to Pages
 
 on:
   push:
-    branches: [work]
+    branches: [main, work]
+
   workflow_dispatch:
 
 permissions:
