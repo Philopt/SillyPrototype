@@ -1,9 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const getBasePath = command => {
+  if (command !== 'build') {
+    return '/'
+  }
+
+  const repo = process.env.GITHUB_REPOSITORY?.split('/')[1]
+  return repo ? `/${repo}/` : '/'
+}
+
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  // Use relative paths so the built app works when opened via the file system
-  base: './',
-})
+  base: getBasePath(command),
+}))
