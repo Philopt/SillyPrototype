@@ -1,56 +1,78 @@
-import React, { useState } from 'react'
-import './index.css'
+import { useState } from 'react'
+import './App.css'
 
-const rows = ['Role', 'Persona', 'Core']
-const cols = ['Ordinary', 'Crisis (Now)', 'Transformed']
-
-function StatCell({ value, onClick }) {
-  const color = value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-gray-800'
-  return (
-    <button
-      className={`w-20 h-20 border flex items-center justify-center ${color}`}
-      onClick={onClick}
-    >
-      {value}
-    </button>
-  )
-}
+const cards = [
+  {
+    id: 'dreamscape',
+    title: 'Dreamscape',
+    description: 'Soft hills and star paths shimmer in the mist.',
+  },
+  {
+    id: 'all-seeing',
+    title: 'All-Seeing',
+    description: 'A calm gaze that keeps the world in balance.',
+  },
+  {
+    id: 'wanderer',
+    title: 'Wanderer',
+    description: 'A tiny traveler on a dark, glowing tile.',
+  },
+]
 
 export default function App() {
-  const initial = Array.from({ length: 3 }, () => Array(3).fill(0))
-  const [grid, setGrid] = useState(initial)
-
-  const cycleValue = (r, c) => {
-    setGrid(prev =>
-      prev.map((row, ri) =>
-        row.map((val, ci) => {
-          if (ri === r && ci === c) {
-            const next = val + 1
-            return next > 3 ? -3 : next
-          }
-          return val
-        })
-      )
-    )
-  }
+  const [activeCard, setActiveCard] = useState(null)
 
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold mb-4 text-center'>Silly Lab: Stat Grid Simulator</h1>
-      <div className='grid grid-cols-4 gap-2'>
-        <div></div>
-        {cols.map(col => (
-          <div key={col} className='text-center font-semibold'>{col}</div>
-        ))}
-        {rows.map((rowLabel, r) => (
-          <React.Fragment key={rowLabel}>
-            <div className='font-semibold flex items-center'>{rowLabel}</div>
-            {grid[r].map((val, c) => (
-              <StatCell key={c} value={val} onClick={() => cycleValue(r, c)} />
-            ))}
-          </React.Fragment>
-        ))}
+    <div className='stage'>
+      <div className='board'>
+        <header className='board-header'>
+          <p className='eyebrow'>Silly Prototype</p>
+          <h1>Dream Board</h1>
+          <p>
+            Choose a card to begin the Red Balloon scene. Drop your movie file at
+            <span className='filename'> /public/red-balloon.mp4</span>.
+          </p>
+        </header>
+
+        <section className='card-row'>
+          {cards.map(card => (
+            <button
+              key={card.id}
+              type='button'
+              className={`dream-card dream-card--${card.id}`}
+              onClick={() => setActiveCard(card)}
+            >
+              <span className='card-glow' aria-hidden='true' />
+              <span className='card-art' aria-hidden='true' />
+              <span className='card-copy'>
+                <span className='card-title'>{card.title}</span>
+                <span className='card-desc'>{card.description}</span>
+              </span>
+              <span className='card-cta'>Play Red Balloon</span>
+            </button>
+          ))}
+        </section>
       </div>
+
+      {activeCard ? (
+        <div className='modal' role='dialog' aria-modal='true'>
+          <div className='modal-surface'>
+            <div className='modal-header'>
+              <div>
+                <p className='eyebrow'>Now playing</p>
+                <h2>{activeCard.title}</h2>
+              </div>
+              <button type='button' className='close-btn' onClick={() => setActiveCard(null)}>
+                Close
+              </button>
+            </div>
+            <video className='player' controls autoPlay playsInline>
+              <source src='/red-balloon.mp4' type='video/mp4' />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
